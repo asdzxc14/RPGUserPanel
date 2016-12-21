@@ -1,31 +1,4 @@
-//////////////////////////////////////////////////////////////////////////////////////
-//
-//  Copyright (c) 2014-present, Egret Technology.
-//  All rights reserved.
-//  Redistribution and use in source and binary forms, with or without
-//  modification, are permitted provided that the following conditions are met:
-//
-//     * Redistributions of source code must retain the above copyright
-//       notice, this list of conditions and the following disclaimer.
-//     * Redistributions in binary form must reproduce the above copyright
-//       notice, this list of conditions and the following disclaimer in the
-//       documentation and/or other materials provided with the distribution.
-//     * Neither the name of the Egret nor the
-//       names of its contributors may be used to endorse or promote products
-//       derived from this software without specific prior written permission.
-//
-//  THIS SOFTWARE IS PROVIDED BY EGRET AND CONTRIBUTORS "AS IS" AND ANY EXPRESS
-//  OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-//  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
-//  IN NO EVENT SHALL EGRET AND CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-//  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-//  LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;LOSS OF USE, DATA,
-//  OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-//  LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-//  NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
-//  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-//
-//////////////////////////////////////////////////////////////////////////////////////
+
 
 class Main extends egret.DisplayObjectContainer {
 
@@ -33,14 +6,14 @@ class Main extends egret.DisplayObjectContainer {
      * 加载进度界面
      * Process interface loading
      */
-    private loadingView: LoadingUI;
+    private loadingView:LoadingUI;
 
     public constructor() {
         super();
         this.addEventListener(egret.Event.ADDED_TO_STAGE, this.onAddToStage, this);
     }
 
-    private onAddToStage(event: egret.Event) {
+    private onAddToStage(event:egret.Event) {
         //设置加载进度界面
         //Config to load process interface
         this.loadingView = new LoadingUI();
@@ -56,7 +29,7 @@ class Main extends egret.DisplayObjectContainer {
      * 配置文件加载完成,开始预加载preload资源组。
      * configuration file loading is completed, start to pre-load the preload resource group
      */
-    private onConfigComplete(event: RES.ResourceEvent): void {
+    private onConfigComplete(event:RES.ResourceEvent):void {
         RES.removeEventListener(RES.ResourceEvent.CONFIG_COMPLETE, this.onConfigComplete, this);
         RES.addEventListener(RES.ResourceEvent.GROUP_COMPLETE, this.onResourceLoadComplete, this);
         RES.addEventListener(RES.ResourceEvent.GROUP_LOAD_ERROR, this.onResourceLoadError, this);
@@ -69,7 +42,7 @@ class Main extends egret.DisplayObjectContainer {
      * preload资源组加载完成
      * Preload resource group is loaded
      */
-    private onResourceLoadComplete(event: RES.ResourceEvent): void {
+    private onResourceLoadComplete(event:RES.ResourceEvent):void {
         if (event.groupName == "preload") {
             this.stage.removeChild(this.loadingView);
             RES.removeEventListener(RES.ResourceEvent.GROUP_COMPLETE, this.onResourceLoadComplete, this);
@@ -84,7 +57,7 @@ class Main extends egret.DisplayObjectContainer {
      * 资源组加载出错
      *  The resource group loading failed
      */
-    private onItemLoadError(event: RES.ResourceEvent): void {
+    private onItemLoadError(event:RES.ResourceEvent):void {
         console.warn("Url:" + event.resItem.url + " has failed to load");
     }
 
@@ -92,7 +65,7 @@ class Main extends egret.DisplayObjectContainer {
      * 资源组加载出错
      *  The resource group loading failed
      */
-    private onResourceLoadError(event: RES.ResourceEvent): void {
+    private onResourceLoadError(event:RES.ResourceEvent):void {
         //TODO
         console.warn("Group:" + event.groupName + " has failed to load");
         //忽略加载失败的项目
@@ -104,41 +77,46 @@ class Main extends egret.DisplayObjectContainer {
      * preload资源组加载进度
      * Loading process of preload resource group
      */
-    private onResourceProgress(event: RES.ResourceEvent): void {
+    private onResourceProgress(event:RES.ResourceEvent):void {
         if (event.groupName == "preload") {
             this.loadingView.setProgress(event.itemsLoaded, event.itemsTotal);
         }
     }
 
-    private textfield: egret.TextField;
+    private textfield:egret.TextField;
 
     /**
      * 创建游戏场景
      * Create a game scene
      */
-    private createGameScene(): void {
+    private createGameScene():void {
 
-        var jewel1 = new Jewel(0);
-        var jewel2 = new Jewel(1);
+        var gem1 = new Gem(0);
+        var gem2 = new Gem(1);
+        var gem3 = new Gem(2);
 
-        var equipment1 = new Equipment(0);
-        var equipment2 = new Equipment(1);
-        var equipment3 = new Equipment(3);
+        var sword1 = new Weapon(0);
+        var shield1 = new Shield(0);
+        var head1 = new Head(0);
+
+        sword1.addGem(gem1);
+        shield1.addGem(gem2);
+        head1.addGem(gem3);
 
         var hero1 = new Hero(0);
 
         var panel = new HeroPanel();
 
-        hero1.equip(equipment1);
-        hero1.equip(equipment2);
-        hero1.equip(equipment3);
+        hero1.equip(sword1);
+        hero1.equip(shield1);
+        hero1.equip(head1);
 
-        panel.equipmentMap.equip(equipment1);
-        panel.equipmentMap.equip(equipment2);
-        panel.equipmentMap.equip(equipment3);
+        panel.equipmentMap.equip(sword1);
+        panel.equipmentMap.equip(shield1);
+        panel.equipmentMap.equip(head1);
 
         hero1.setInTeam(true);
-
+        
         var user = new User();
 
         user.addHero(hero1);
@@ -146,5 +124,22 @@ class Main extends egret.DisplayObjectContainer {
         this.addChild(panel);
 
         panel.setHero(hero1);
+
     }
+
+    /**
+     * 根据name关键字创建一个Bitmap对象。name属性请参考resources/resource.json配置文件的内容。
+     * Create a Bitmap object according to name keyword.As for the property of name please refer to the configuration file of resources/resource.json.
+     */
+    private createBitmapByName(name:string):egret.Bitmap {
+        var result = new egret.Bitmap();
+        var texture:egret.Texture = RES.getRes(name);
+        result.texture = texture;
+        return result;
+    }
+
+
+
 }
+
+

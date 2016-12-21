@@ -8,15 +8,18 @@ var game_file_list = [
 	"libs/modules/game/game.native.js",
 	"libs/modules/res/res.js",
 	"libs/modules/tween/tween.js",
-	"bin-debug/Config.js",
-	"bin-debug/Property.js",
 	"bin-debug/Equipment.js",
+	"bin-debug/EquipmentPanel.js",
+	"bin-debug/Property.js",
+	"bin-debug/Gem.js",
+	"bin-debug/Head.js",
 	"bin-debug/Hero.js",
 	"bin-debug/HeroPanel.js",
-	"bin-debug/Jewel.js",
 	"bin-debug/LoadingUI.js",
 	"bin-debug/Main.js",
+	"bin-debug/Shield.js",
 	"bin-debug/User.js",
+	"bin-debug/Weapon.js",
 	//----auto game_file_list end----
 ];
 

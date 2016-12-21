@@ -1,10 +1,10 @@
 class Property {
 
-    type: number;
-    configId: string;
-    name: string;
+	type: number;
+	configId: string;
+	name: string;
 
-    public constructor() {
+	public constructor() {
 
-    }
+	}
 }

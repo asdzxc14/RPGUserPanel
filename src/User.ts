@@ -1,16 +1,16 @@
 class User {
 
     heros: Hero[] = [];
+    herointeam: Hero[] = [];
 
-	public constructor() {
-	}
+    public constructor() {
+    }
 
-	public addHero(hero:Hero):void {
-		this.heros.push(hero);
-	}
+    public addHero(hero: Hero): void {
+        this.heros.push(hero);
+    }
 
-    getHeroInTeam(): Hero[] {
-
+    get heroInTeam(): Hero[] {
         var heroInTeam: Hero[] = [];
 
         for (var i = 0; i < this.heros.length; i++) {
@@ -24,11 +24,11 @@ class User {
     get fightPower(): number {
 
         var result = 0;
-        var heros: Hero[] = this.getHeroInTeam();
+        var heros: Hero[] = this.heroInTeam;
 
         for (var i = 0; i < heros.length; i++) {
-
             result += heros[i].fightPower;
+
         }
         return result;
     }
