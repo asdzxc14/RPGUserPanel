@@ -1,40 +1,23 @@
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var Equipment = (function () {
-    function Equipment(type) {
-        var _this = this;
-        this.dirtyFlag = true;
+var EquipmentProperty = (function (_super) {
+    __extends(EquipmentProperty, _super);
+    function EquipmentProperty(id, name, basicAttack, getRate, consume) {
+        _super.call(this);
+        this.configId = "";
+        this.name = "";
+        this.basicAttack = 0;
+        this.getRate = 0;
+        this.consume = 0;
         this.jewels = [];
-        this.attackCache = function (target, propertyName, desc) {
-            if (!_this.dirtyFlag) {
-                var getter_1 = desc.get;
-                desc.get = function () {
-                    return getter_1.apply(this);
-                };
-                return desc;
-            }
-        };
-        this.fightPowerCache = function (target, propertyName, desc) {
-            if (!_this.dirtyFlag) {
-                var getter_2 = desc.get;
-                desc.get = function () {
-                    return getter_2.apply(this);
-                };
-                return desc;
-            }
-        };
-        this.basicAttackData = equipmentConfig[type].basicAttack;
-        this.getRateData = equipmentConfig[type].getRate;
-        this.consumeData = equipmentConfig[type].consume;
+        this.configId = id;
+        this.name = name;
+        this.basicAttack = basicAttack;
+        this.getRate = getRate;
+        this.consume = consume;
     }
-    var d = __define,c=Equipment,p=c.prototype;
+    var d = __define,c=EquipmentProperty,p=c.prototype;
     d(p, "attack"
         ,function () {
-            return this.basicAttackData / this.getRateData * this.consumeData;
+            return this.basicAttack / this.getRate * this.consume;
         }
     );
     d(p, "fightPower"
@@ -46,12 +29,36 @@ var Equipment = (function () {
             return (this.attack + result * 0.3) * 10;
         }
     );
-    __decorate([
-        this.attackCache
-    ], p, "attack", null);
-    __decorate([
-        this.fightPowerCache
-    ], p, "fightPower", null);
+    return EquipmentProperty;
+}(Property));
+egret.registerClass(EquipmentProperty,'EquipmentProperty');
+var Equipment = (function () {
+    function Equipment(type) {
+        this.gems = [];
+        this.jewels = [];
+        this.property = new EquipmentProperty(equipmentConfig[type].id, equipmentConfig[type].name, equipmentConfig[type].basicAttack, equipmentConfig[type].getRate, equipmentConfig[type].consume);
+    }
+    var d = __define,c=Equipment,p=c.prototype;
+    d(p, "attack"
+        ,function () {
+            return this.property.attack;
+        }
+    );
+    d(p, "getRate"
+        ,function () {
+            return this.property.getRate;
+        }
+    );
+    d(p, "consume"
+        ,function () {
+            return this.property.consume;
+        }
+    );
+    d(p, "fightPower"
+        ,function () {
+            return this.property.fightPower;
+        }
+    );
     return Equipment;
 }());
 egret.registerClass(Equipment,'Equipment');

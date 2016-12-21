@@ -2,9 +2,13 @@ class User {
 
     heros: Hero[] = [];
 
-    dirtyFlag: boolean = true;
+	public constructor() {
+	}
 
-    @this.getHerosInTeamCache
+	public addHero(hero:Hero):void {
+		this.heros.push(hero);
+	}
+
     getHeroInTeam(): Hero[] {
 
         var heroInTeam: Hero[] = [];
@@ -17,7 +21,6 @@ class User {
         return heroInTeam;
     }
 
-    @this.fightPowerCache
     get fightPower(): number {
 
         var result = 0;
@@ -28,27 +31,5 @@ class User {
             result += heros[i].fightPower;
         }
         return result;
-    }
-
-    getHerosInTeamCache: MethodDecorator = (target: any, propertyName, desc: PropertyDescriptor) => {
-
-        if (!this.dirtyFlag) {
-            const getter = desc.get;
-            desc.get = function () {
-                return getter.apply(this);
-            }
-            return desc;
-        }
-    }
-
-    fightPowerCache: MethodDecorator = (target: any, propertyName, desc: PropertyDescriptor) => {
-
-        if (!this.dirtyFlag) {
-            const getter = desc.get;
-            desc.get = function () {
-                return getter.apply(this);
-            }
-            return desc;
-        }
     }
 }

@@ -1,49 +1,53 @@
+class JewelProperty extends Property {
+
+    public configId: string = "";
+    public basicAttack: number = 0;
+    public getRate: number = 0;
+    public purity: number = 0;
+
+
+    public constructor(id: string, attack: number, getRate: number, purity: number) {
+        super();
+        this.configId = id;
+        this.basicAttack = attack;
+        this.getRate = getRate;
+        this.purity = purity;
+    }
+
+    get attack(): number {
+
+        return this.basicAttack / this.purity * 10;
+    }
+
+    get fightPower(): number {
+
+        return this.attack * 0.8 + 100 / this.getRate;
+    }
+}
+
 class Jewel {
 
-    basicAttackData: number;
-    getRateData: number;
-    purityData: number;
-
-    dirtyFlag: boolean = true;
+    public property: JewelProperty;
 
     public constructor(type: number) {
 
-        this.basicAttackData = jewelConfig[type].basicAttack;
-        this.getRateData = jewelConfig[type].getRate;
-        this.purityData = jewelConfig[type].purity;
+        this.property = new JewelProperty(jewelConfig[type].id, jewelConfig[type].basicAttack, jewelConfig[type].getRate, jewelConfig[type].purity);
+
     }
 
-    @this.attackCache
     get attack(): number {
-
-        return this.basicAttackData / this.purityData * 10;
+        return this.property.basicAttack;
     }
 
-    @this.fightPowerCache
+    get getRate(): number {
+        return this.property.getRate;
+    }
+
+    get purity(): number {
+        return this.property.purity;
+    }
+
     get fightPower(): number {
-
-        return this.attack * 0.8 + 100 / this.getRateData;
-    }
-
-    attackCache: MethodDecorator = (target: any, propertyName, desc: PropertyDescriptor) => {
-
-        if (!this.dirtyFlag) {
-            const getter = desc.get;
-            desc.get = function () {
-                return getter.apply(this);
-            }
-            return desc;
-        }
-    }
-
-    fightPowerCache: MethodDecorator = (target: any, propertyName, desc: PropertyDescriptor) => {
-
-        if (!this.dirtyFlag) {
-            const getter = desc.get;
-            desc.get = function () {
-                return getter.apply(this);
-            }
-            return desc;
-        }
+        return this.property.fightPower;
     }
 }

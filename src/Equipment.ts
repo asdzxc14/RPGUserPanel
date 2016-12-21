@@ -1,56 +1,57 @@
-class Equipment {
+class EquipmentProperty extends Property {
 
-    basicAttackData: number;
-    getRateData: number;
-    consumeData: number;
+    public configId: string = "";
+    public name: string = "";
+    public basicAttack: number = 0;
+    public getRate: number = 0;
+    public consume: number = 0;
+    public jewels: Jewel[] = [];
 
-    dirtyFlag: boolean = true;
-    jewels: Jewel[] = [];
-
-    public constructor(type: number) {
-
-        this.basicAttackData = equipmentConfig[type].basicAttack;
-        this.getRateData = equipmentConfig[type].getRate;
-        this.consumeData = equipmentConfig[type].consume
-
+    public constructor(id: string, name: string, basicAttack: number, getRate: number, consume: number) {
+        super();
+        this.configId = id;
+        this.name = name;
+        this.basicAttack = basicAttack;
+        this.getRate = getRate;
+        this.consume = consume;
     }
 
-    @this.attackCache
     get attack(): number {
-        return this.basicAttackData / this.getRateData * this.consumeData;
+        return this.basicAttack / this.getRate * this.consume;
     }
 
-    @this.fightPowerCache
     get fightPower(): number {
-
         var result = 0;
-
         for (var i = 0; i < this.jewels.length; i++) {
-
             result += this.jewels[i].fightPower;
         }
         return (this.attack + result * 0.3) * 10;
     }
+}
 
-    attackCache: MethodDecorator = (target: any, propertyName, desc: PropertyDescriptor) => {
 
-        if (!this.dirtyFlag) {
-            const getter = desc.get;
-            desc.get = function () {
-                return getter.apply(this);
-            }
-            return desc;
-        }
+class Equipment {
+
+    public property: EquipmentProperty;
+    public gems: Jewel[] = [];
+    jewels: Jewel[] = [];
+
+    public constructor(type: number) {
+        this.property = new EquipmentProperty(equipmentConfig[type].id, equipmentConfig[type].name, equipmentConfig[type].basicAttack, equipmentConfig[type].getRate, equipmentConfig[type].consume);
     }
 
-    fightPowerCache: MethodDecorator = (target: any, propertyName, desc: PropertyDescriptor) => {
+    get attack(): number {
+        return this.property.attack;
+    }
 
-        if (!this.dirtyFlag) {
-            const getter = desc.get;
-            desc.get = function () {
-                return getter.apply(this);
-            }
-            return desc;
-        }
+    get getRate(): number {
+        return this.property.getRate;
+    }
+
+    get consume(): number {
+        return this.property.consume;
+    }
+    get fightPower(): number {
+        return this.property.fightPower;
     }
 }

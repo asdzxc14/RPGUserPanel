@@ -1,42 +1,33 @@
-class Hero {
-
+class HeroProperty extends Property {
+    configId: string = "";
+    name: string = "";
+    basicAttack: number = 0;
+    strength: number = 0;
+    agility: number = 0;
+    intelligence: number = 0;
     level = 1;
-
-    basicAttackData: number;
-    strengthData: number;
-    agilityData: number;
-    intelligenceData: number;
-
-    isInTeam: boolean = false;
-    dirtyFlag: boolean = true;
 
     equipments: Equipment[] = [];
 
-    public constructor(type: number) {
-
-        this.basicAttackData = heroConfig[type].basicAttack;
-        this.strengthData = heroConfig[type].strength;
-        this.agilityData = heroConfig[type].agility;
-        this.intelligenceData = heroConfig[type].intelligence;
+    public constructor(id: string, name: string, basicAttack: number, strength: number, agility: number, intelligence: number) {
+        super();
+        this.configId = id;
+        this.name = name;
+        this.basicAttack = basicAttack;
+        this.strength = strength;
+        this.agility = agility;
+        this.intelligence = intelligence;
     }
 
-    public setInTeam(status: boolean) {
-
-        this.isInTeam = status;
-        this.dirtyFlag = true;
+    public levelup(): void {
+        this.level++;
     }
 
-    @this.maxHpCache
-    get maxHp(): number {
-        return this.level * this.intelligenceData * 100;
-    }
 
-    @this.attackCache
     get attack(): number {
-        return (this.basicAttackData * this.strengthData * this.agilityData * 0.6 + this.maxHp * 0.4) * Math.pow(1.1, this.level);
+        return (this.basicAttack * this.strength * this.agility) * Math.pow(1.1, this.level);
     }
 
-    @this.fightPowerCache
     get fightPower(): number {
 
         var result = 0;
@@ -47,37 +38,36 @@ class Hero {
         }
         return (this.attack + result * 0.3) * 2;
     }
+}
 
-    maxHpCache: MethodDecorator = (target: any, propertyName, desc: PropertyDescriptor) => {
+class Hero {
 
-        if (!this.dirtyFlag) {
-            const getter = desc.get;
-            desc.get = function () {
-                return getter.apply(this);
-            }
-            return desc;
-        }
+    public property: HeroProperty;
+    public isInTeam: boolean = false;
+
+    public equipments: Equipment[] = [];
+
+    public constructor(type: number) {
+        this.property = new HeroProperty(heroConfig[type].id, heroConfig[type].name, heroConfig[type].basicAttack, heroConfig[type].strength, heroConfig[type].agility, heroConfig[type].intelligence);
     }
 
-    attackCache: MethodDecorator = (target: any, propertyName, desc: PropertyDescriptor) => {
-
-        if (!this.dirtyFlag) {
-            const getter = desc.get;
-            desc.get = function () {
-                return getter.apply(this);
-            }
-            return desc;
-        }
+    public setInTeam(status: boolean) {
+        this.isInTeam = status;
     }
 
-    fightPowerCache: MethodDecorator = (target: any, propertyName, desc: PropertyDescriptor) => {
+    public equip(equipment: Equipment): void {
+        this.equipments.push(equipment);
+    }
 
-        if (!this.dirtyFlag) {
-            const getter = desc.get;
-            desc.get = function () {
-                return getter.apply(this);
-            }
-            return desc;
-        }
+    get maxHp(): number {
+        return this.property.level * this.property.intelligence * 100;
+    }
+
+    get attack(): number {
+        return this.property.basicAttack;
+    }
+
+    get fightPower(): number {
+        return this.property.fightPower;
     }
 }

@@ -123,26 +123,28 @@ class Main extends egret.DisplayObjectContainer {
 
         var equipment1 = new Equipment(0);
         var equipment2 = new Equipment(1);
+        var equipment3 = new Equipment(3);
 
         var hero1 = new Hero(0);
-        var hero2 = new Hero(1);
+
+        var panel = new HeroPanel();
+
+        hero1.equip(equipment1);
+        hero1.equip(equipment2);
+        hero1.equip(equipment3);
+
+        panel.equipmentMap.equip(equipment1);
+        panel.equipmentMap.equip(equipment2);
+        panel.equipmentMap.equip(equipment3);
+
+        hero1.setInTeam(true);
 
         var user = new User();
 
-        equipment1.jewels.push(jewel1);
-        equipment2.jewels.push(jewel2);
+        user.addHero(hero1);
 
-        hero1.equipments.push(equipment1);
-        hero2.equipments.push(equipment2);
+        this.addChild(panel);
 
-        user.heros.push(hero1);
-        user.heros.push(hero2);
-
-        user.heros[0].setInTeam(true);
-        user.heros[1].setInTeam(true);
-        user.heros[0].level = 10;
-        user.heros[1].level = 10;
-
-        console.log(user.fightPower);
+        panel.setHero(hero1);
     }
 }
